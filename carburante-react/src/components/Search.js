@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 
 // Validation
@@ -12,11 +12,9 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-function Search({ getFormData }) {
-    const [lat, setLat] = useState(null);
-    const [lng, setLng] = useState(null);
-    const [gpsStatus, setGpsStatus] = useState(null);
-    const [isInputDisabled, setIsInputDisabled] = useState(true);
+function Search(props) {
+    // { getFormData, isDisabled, gpsStatus }
+
 
     // Form validation
     const yupValidation = Yup.object().shape({
@@ -29,40 +27,11 @@ function Search({ getFormData }) {
     const { errors } = formState
 
     function onSubmit(data) {
-        return getFormData(data)
+        return props.getFormData(data)
         // return setFormDataValues(JSON.stringify(data, null, 4))
 
     }
 
-
-
-
-    // Called upon component mount
-    useEffect(() => {
-        getLocation();
-    }, []);
-
-
-    const getLocation = () => {
-        if (!navigator.geolocation) {
-            setGpsStatus('Geolocation is not supported by your browser');
-        } else {
-            setGpsStatus('Recuperando...');
-            navigator.geolocation.getCurrentPosition((position) => {
-                setIsInputDisabled(false)
-                setGpsStatus('📍Posizione recuperata!');
-                setLat(position.coords.latitude);
-                setLng(position.coords.longitude);
-            }, () => {
-                setGpsStatus('Impossibile recuperare la tua posizione');
-            }, { maximumAge: 5000, timeout: 50000, enableHighAccuracy: true });
-        }
-
-    }
-
-    // function onSubmit(data) {
-    //     console.log(JSON.stringify(data, null, 4))
-    // }
 
 
     return (
@@ -79,15 +48,14 @@ function Search({ getFormData }) {
                     </Card.Title>
 
                     <Card.Subtitle className="mb-2 text-muted fs-6">
-                        <p className="fs-6">{gpsStatus}</p>
+                        <p className="fs-6">{props.gpsStatus}</p>
                         <hr />
                     </Card.Subtitle>
                     <Container>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col>
-
-                                    <Form.Select size="sm" disabled={isInputDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
+                                    <Form.Select size="sm" disabled={props.isDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
                                         {...register('carburante')}>
                                         <option defaultValue="none" selected disabled>Tipo di Carburante</option>
                                         <option value="1-x">Benzina (Tutti)</option>
@@ -119,7 +87,7 @@ function Search({ getFormData }) {
                                     {/* <small className="form-text text-danger visually-hidden">🙏🏻 Perfavore, seleziona un tipo di carburante.</small> */}
                                 </Col>
                                 <Col>
-                                    <Form.Select size="sm" disabled={isInputDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
+                                    <Form.Select size="sm" disabled={props.isDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
                                         {...register('ordineprezzo')}>
                                         <option defaultValue="none" selected disabled>Ordine Prezzi</option>
                                         <option value="asc">📈 Crescente</option>
@@ -131,7 +99,7 @@ function Search({ getFormData }) {
                             </Row>
                             <Row className="mt-3">
                                 <Col>
-                                    <Form.Select size="sm" disabled={isInputDisabled} name="distanzaricerca" className={`form-control ${errors.distanzaricerca ? 'is-invalid' : ''}`}
+                                    <Form.Select size="sm" disabled={props.isDisabled} name="distanzaricerca" className={`form-control ${errors.distanzaricerca ? 'is-invalid' : ''}`}
                                         {...register('distanzaricerca')}>
                                         <option defaultValue="none" selected disabled>Distanza di Ricerca</option>
                                         <option value="1000"> 1Km (🆘)
@@ -153,12 +121,10 @@ function Search({ getFormData }) {
                                 </Col>
                             </Row>
                             <div className="mx-auto btn-lg text-center pt-3">
-                                <Button type="submit" variant="outline-primary" disabled={isInputDisabled} >Ricerca 🔎</Button>
+                                <Button type="submit" variant="outline-primary" disabled={props.isDisabled} >Ricerca 🔎</Button>
                             </div>
                         </form>
                     </Container>
-                    <Card.Link href="#">Card Link</Card.Link>
-                    <Card.Link href="#">Another Link</Card.Link>
                 </Card.Body>
             </Card>
 
