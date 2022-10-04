@@ -19,15 +19,7 @@ function App() {
   const [gpsStatus, setGpsStatus] = useState(null);
   const [isInputDisabled, setIsInputDisabled] = useState(true);
 
-  // const [getFormData, setFormDataValues] = useState('');
-  const [formDataValues, setFormDataValues] = useState('');
 
-
-
-  const getFormData = (data) => {
-    setFormDataValues(data);
-    // console.log(formDataValues)
-  }
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -43,6 +35,7 @@ function App() {
         setGpsStatus('Impossibile recuperare la tua posizione');
       }, { maximumAge: 5000, timeout: 50000, enableHighAccuracy: true });
     }
+
 
   }
 
@@ -69,11 +62,8 @@ function App() {
         </Container>
       </Navbar>
       {/* Add main search components */}
-      <Search getFormData={getFormData} isDisabled={isInputDisabled} gpsStatus={gpsStatus} />
+      <Search lat={lat} lng={lng} gpsStatus={gpsStatus} isDisabled={isInputDisabled}/>
 
-      {/* Add result components */}
-      <ResultList searchParams={formDataValues} isDisabled={isInputDisabled} />
-      {/* Add statistics component */}
     </div>
   );
 }
