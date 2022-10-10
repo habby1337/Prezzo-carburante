@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -8,18 +8,17 @@ import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 
 
-import ResultItem from './ResultItem';
+import RowLine from './RowLine';
 
 
 
 
 
 
-
-
-function ResultList({ isDisabled, resultData }) {
+function ResultList({ isDisabled, resultPetrolData, fuelType }) {
 
     const [maxResult, setMaxResult] = useState(5);
+    const [listItems, setListItems] = useState([]);
 
     const handleMaxResult = (e) => {
         setMaxResult(e.target.value);
@@ -27,9 +26,87 @@ function ResultList({ isDisabled, resultData }) {
     }
 
 
+    useEffect(() => {
+
+        if (resultPetrolData != 0) {
+            let fuel_combo_selection = fuelType.split('-')
+            let is_fuelpump_selfservice, fuel_type_selected, fuel_price;
+
+            // Convert fuel type to correct name
+            switch (fuel_combo_selection[0]) {
+                case '1':
+                    fuel_type_selected = 'Benzina'
+                    break;
+                case '2':
+                    fuel_type_selected = 'Gasolio'
+                    break;
+                case '3':
+                    fuel_type_selected = 'Metano'
+                    break;
+                case '4':
+                    fuel_type_selected = 'GPL'
+                    break;
+                case '323':
+                    fuel_type_selected = 'L-GNC'
+                    break;
+                case '324':
+                    fuel_type_selected = 'GNL'
+                    break;
+            }
+
+            //Convert fuel dispenser type to correct value
+            switch (fuel_combo_selection[1]) {
+                case '1':
+                    is_fuelpump_selfservice = true;
+                    break;
+                case '2':
+                    is_fuelpump_selfservice = false;
+                    break;
+                case 'x':
+                    is_fuelpump_selfservice = undefined;
+                    break;
+            }
+
+
+            const validResults = resultPetrolData
+                .results
+                .filter(result => result
+                    .fuels
+                    .some(fuel => fuel.name === fuel_type_selected));
+
+
+            const validNResults = validResults.slice(0, maxResult);
+
+
+            const finalList = validNResults
+                .map((row, index) => {
+
+                    const fuelToUse = row
+                        .fuels
+                        .find(fuel =>
+                            fuel.name === fuel_type_selected
+                        );
+                    const fuel_price = fuelToUse.price.toString();
+
+
+                    if (fuelToUse.isSelf === is_fuelpump_selfservice) {
+                        return (<RowLine key={index} index={index} row={row} isSelf={true} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
+                    } else if (is_fuelpump_selfservice === undefined) {
+                        return (<RowLine key={index} index={index} row={row} isSelf={false} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
+                    }
+                })
+
+            setListItems(finalList)
+
+        }
+        else {
+            setListItems([<tr key="1"><td colSpan="3" className="text-dark text-center">Perfavore, seleziona i criteri
+                di ricerca 🫠</td></tr>])
+        }
+    }, [resultPetrolData, maxResult])
+
     return (
         <>
-
             <Container className="mt-3">
                 <Card>
                     <Card.Body>
@@ -62,11 +139,7 @@ function ResultList({ isDisabled, resultData }) {
                                     </tr>
                                 </thead >
                                 <tbody>
-                                    {resultData = null ? resultData.slice(0, maxResult).map((item, index) => {
-                                        return <ResultItem key={index} item={item} />
-                                    }) : <td colspan="3" className="text-dark text-center">Perfavore, seleziona i criteri
-                                        di ricerca 🫠</td>}
-
+                                    {listItems}
                                 </tbody>
 
                             </Table>

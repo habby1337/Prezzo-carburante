@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
-import './App.css';
+// import './App.css';
 
 // Components
 import Search from './components/Search';
@@ -33,7 +33,7 @@ function App() {
         setLng(position.coords.longitude);
       }, () => {
         setGpsStatus('Impossibile recuperare la tua posizione');
-      }, { maximumAge: 5000, timeout: 50000, enableHighAccuracy: true });
+      }, { maximumAge: 5000, timeout: 80000, enableHighAccuracy: true });
     }
 
 
@@ -62,7 +62,7 @@ function App() {
         </Container>
       </Navbar>
       {/* Add main search components */}
-      <Search lat={lat} lng={lng} gpsStatus={gpsStatus} isDisabled={isInputDisabled}/>
+      <Search lat={lat} lng={lng} gpsStatus={gpsStatus} isDisabled={isInputDisabled} />
 
     </div>
   );

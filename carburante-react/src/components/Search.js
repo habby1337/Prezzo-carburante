@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 // Validation
@@ -17,11 +17,12 @@ import ResultList from './ResultList';
 // Function
 import getCircleFromPoint from '../modules/getCircleFromPoint';
 import getArrayOfCircleOfPoints from '../modules/getArrayOfCircleOfPoints';
-import getPetrolData from '../modules/getPetrolData';
 
 function Search({ gpsStatus, isDisabled, lat, lng }) {
 
-    const [resultData, setResultData] = useState(null);
+    const [resultData, setResultData] = useState({});
+    const [formData, setFormData] = useState();
+    const [isFirstCall, setIsFirstCall] = useState(true);
 
     // Form validation
     const yupValidation = Yup.object().shape({
@@ -35,12 +36,12 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
 
     function onSubmit(data) {
 
-
+        setIsFirstCall(false)
         // calculate position and points
-        // console.log(data.distanzaricerca)
         let poinList = getCircleFromPoint(lat, lng, data.distanzaricerca);
         let pointArray = getArrayOfCircleOfPoints(poinList); //Converts array with the correct api requested format 
 
+        setFormData(data);
         // Prepare data body
         let body_data = {
             points: pointArray,
@@ -48,13 +49,38 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
             priceOrder: data.ordineprezzo
         }
 
-        // make the request and set the state variable resultDAta
-        setResultData(getPetrolData(body_data));
+        new Promise((resolve, reject) => {
+            getPetrolData(body_data, resolve, reject)
+        })
+    }
 
+    useEffect(() => {
+        if (isFirstCall) {
+            setResultData([])
+        }
 
-        // pass data to child component ResultList
-        return;
+    }, [isFirstCall])
 
+    function getPetrolData(jsonDataRequest, resolve, reject) {
+
+        const axios = require('axios').default;
+        const body_json = JSON.stringify(jsonDataRequest);
+        const headers = {
+            'Content-Type': 'application/json',
+            'contentType': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
+        }
+        axios.post('http://localhost:8000/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, { headers: headers })
+            .then(function (response) {
+                setResultData(response.data)
+                return resolve();
+            })
+            .catch(function (error) {
+                return reject(error);
+            });
 
     }
 
@@ -70,8 +96,6 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                     <Card.Body>
                         <Card.Title>
                             Ricerca
-
-
                         </Card.Title>
 
                         <Card.Subtitle className="mb-2 text-muted fs-6">
@@ -82,7 +106,6 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <Row>
                                     <Col>
-                                        {/* <Form.Label htmlFor="carburante">Tipo di Carburante</Form.Label> */}
                                         <Form.Select size="sm" disabled={isDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
                                             {...register('carburante')}>
                                             <option defaultValue value="0">Tipo di Carburante</option>
@@ -112,10 +135,8 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
 
                                         </Form.Select>
                                         <small className="invalid-feedback">{errors.carburante?.message}</small>
-                                        {/* <small className="form-text text-danger visually-hidden">🙏🏻 Perfavore, seleziona un tipo di carburante.</small> */}
                                     </Col>
                                     <Col>
-                                        {/* <Form.Label htmlFor="ordineprezzo">Ordine Prezzi</Form.Label> */}
                                         <Form.Select size="sm" disabled={isDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
                                             {...register('ordineprezzo')}>
                                             <option defaultValue="0">Ordine Prezzi</option>
@@ -123,12 +144,10 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option value="desc">📉 Decrescente</option>
                                         </Form.Select>
                                         <small className="invalid-feedback">{errors.ordineprezzo?.message}</small>
-                                        {/* <small className="form-text text-danger visually-hidden">🙏🏻 Perfavore, seleziona l'ordine di visualizzazione prezzi.</small> */}
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
                                     <Col>
-                                        {/* <Form.Label htmlFor="distanzaricerca">Distanza di ricerca</Form.Label> */}
                                         <Form.Select size="sm" disabled={isDisabled} name="distanzaricerca" className={`form-control ${errors.distanzaricerca ? 'is-invalid' : ''}`}
                                             {...register('distanzaricerca')}>
                                             <option defaultValue value="0">Distanza di Ricerca</option>
@@ -146,7 +165,6 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             </option>
 
                                         </Form.Select>
-                                        {/* <small className="form-text text-danger">🙏🏻 Perfavore, seleziona la distanza di ricerca.</small> */}
                                         <small className="invalid-feedback">{errors.distanzaricerca?.message}</small>
                                     </Col>
                                 </Row>
@@ -159,8 +177,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                 </Card>
 
             </Container>
-
-            <ResultList isDisabled={isDisabled} resultData={resultData} />
+            <ResultList resultPetrolData={isFirstCall ? 0 : resultData} fuelType={isFirstCall ? 0 : formData.carburante} />
         </>
     )
 }
