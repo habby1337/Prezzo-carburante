@@ -9,7 +9,7 @@ import Table from 'react-bootstrap/Table';
 
 
 import RowLine from './RowLine';
-import Statistics from './Statistics';
+// import Statistics from './Statistics';
 
 
 
@@ -29,9 +29,9 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
 
     useEffect(() => {
 
-        if (resultPetrolData != 0) {
+        if (resultPetrolData !== 0 && resultPetrolData.length > 0 && resultPetrolData !== "proxyOff") {
             let fuel_combo_selection = fuelType.split('-')
-            let is_fuelpump_selfservice, fuel_type_selected, fuel_price;
+            let is_fuelpump_selfservice, fuel_type_selected;
 
             // Convert fuel type to correct name
             switch (fuel_combo_selection[0]) {
@@ -53,6 +53,9 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                 case '324':
                     fuel_type_selected = 'GNL'
                     break;
+                default:
+                    fuel_type_selected = 'Benzina'
+                    break;
             }
 
             //Convert fuel dispenser type to correct value
@@ -64,6 +67,9 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                     is_fuelpump_selfservice = false;
                     break;
                 case 'x':
+                    is_fuelpump_selfservice = undefined;
+                    break;
+                default:
                     is_fuelpump_selfservice = undefined;
                     break;
             }
@@ -95,16 +101,22 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                     } else if (is_fuelpump_selfservice === undefined) {
                         return (<RowLine key={index} index={index} row={row} isSelf={false} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
                     }
+                    else {
+                        return (<tr><td colSpan="3">Nessun risultato</td></tr>)
+                    }
                 })
 
             setListItems(finalList)
 
         }
+        else if (resultPetrolData == "proxyOff" || resultPetrolData.length === 0) {
+            setListItems([<tr key="1"><td colSpan="3" className="text-dark text-warning text-center">In questo momento il server backend non sta rispondendo 🥹</td></tr>])
+        }
         else {
             setListItems([<tr key="1"><td colSpan="3" className="text-dark text-center">Perfavore, seleziona i criteri
                 di ricerca 🫠</td></tr>])
         }
-    }, [resultPetrolData, maxResult])
+    }, [resultPetrolData, maxResult, fuelType])
 
     return (
         <>

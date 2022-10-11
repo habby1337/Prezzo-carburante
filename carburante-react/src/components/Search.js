@@ -28,10 +28,10 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
     const yupValidation = Yup.object().shape({
         carburante: Yup.mixed().required('🙏🏻 Perfavore, seleziona un tipo di carburante').notOneOf(['null', 'Tipo di Carburante', '0'], '🙏🏻 Perfavore, seleziona un tipo di carburante'),
         ordineprezzo: Yup.mixed().required('🙏🏻 Perfavore, seleziona l\'ordine di visualizzazione prezzi.').oneOf(['asc', 'desc'], '🙏🏻 Perfavore, seleziona l\'ordine di visualizzazione prezzi.'),
-        distanzaricerca: Yup.number().required('🙏🏻 Perfavore, inserisci la distanza di ricerca.').notOneOf(['Distanza di Ricerca', '0', 'null', 0], '🙏🏻 Perfavore, inserisci la distanza di ricerca.')
+        distanzaricerca: Yup.number().required('🙏🏻 Perfavore, seleziona la distanza di ricerca.').notOneOf(['Distanza di Ricerca', '0', 'null', 0], '🙏🏻 Perfavore, seleziona la distanza di ricerca.')
     })
     const formOptions = { resolver: yupResolver(yupValidation) }
-    const { register, handleSubmit, reset, formState } = useForm(formOptions)
+    const { register, handleSubmit, formState } = useForm(formOptions) //reset,
     const { errors } = formState
 
     function onSubmit(data) {
@@ -75,11 +75,14 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
         }
         axios.post('http://localhost:8000/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, { headers: headers })
             .then(function (response) {
+
                 setResultData(response.data)
                 return resolve();
             })
             .catch(function (error) {
-                return reject(error);
+                // console.log(error);
+                setResultData("proxyOff")
+                return resolve(error);
             });
 
     }
@@ -134,7 +137,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option value="324-0">GNL (Servito)</option> */}
 
                                         </Form.Select>
-                                        <small className="invalid-feedback">{errors.carburante?.message}</small>
+                                        <small data-testid="select_carburante_message" className="invalid-feedback">{errors.carburante?.message}</small>
                                     </Col>
                                     <Col>
                                         <Form.Select data-testid='select_ordineprezzo' size="sm" disabled={isDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
@@ -143,7 +146,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option value="asc">📈 Crescente</option>
                                             <option value="desc">📉 Decrescente</option>
                                         </Form.Select>
-                                        <small className="invalid-feedback">{errors.ordineprezzo?.message}</small>
+                                        <small data-testid="select_ordineprezzo_message" className="invalid-feedback">{errors.ordineprezzo?.message}</small>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
@@ -165,7 +168,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             </option>
 
                                         </Form.Select>
-                                        <small className="invalid-feedback">{errors.distanzaricerca?.message}</small>
+                                        <small data-testid="select_distanzaricerca_message" className="invalid-feedback">{errors.distanzaricerca?.message}</small>
                                     </Col>
                                 </Row>
                                 <div className="mx-auto btn-lg text-center pt-3">

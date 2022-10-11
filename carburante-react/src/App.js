@@ -23,14 +23,15 @@ function App() {
 
   const getLocation = () => {
     if (!navigator.geolocation) {
-      setGpsStatus('Geolocation is not supported by your browser');
+      setGpsStatus('La geolocalizzazione non è supportata da questo browser, non puoi usare l\'applicazione. 😭');
     } else {
-      setGpsStatus('Recuperando...');
+      setGpsStatus('❓ Recuperando la tua posizione 🛰️...');
       navigator.geolocation.getCurrentPosition((position) => {
         setIsInputDisabled(false)
         setGpsStatus('📍Posizione recuperata!');
         setLat(position.coords.latitude);
         setLng(position.coords.longitude);
+        return true;
       }, () => {
         setGpsStatus('Impossibile recuperare la tua posizione');
       }, { maximumAge: 5000, timeout: 80000, enableHighAccuracy: true });
@@ -56,7 +57,7 @@ function App() {
 
             </Nav>
             <Nav>
-              <Nav.Link href="https://www.tensi.dev">Home site</Nav.Link>
+              <Nav.Link href="https://www.tensi.dev">Tensi.dev</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

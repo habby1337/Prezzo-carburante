@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/react';
+import { shallow } from 'enzyme';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
+// import Adapter from 'enzyme-adapter';
 import App from './App';
 
-
+// configure({ adapter: new Adapter() });
 test('loads and displays navbar', async () => {
     render(<App />)
 
@@ -19,7 +21,7 @@ test('Anchor to main site works', async () => {
     render(<App />)
 
     // await userEvent.click(screen.getByText('Home site'))
-    const anchor = screen.getByRole('link', { name: /Home site/i })
+    const anchor = screen.getByRole('link', { name: /Tensi.dev/i })
     expect(anchor).toHaveAttribute('href', 'https://www.tensi.dev')
 
 
@@ -34,4 +36,19 @@ test('Navbar is responsive', async () => {
 
     expect(screen.getByRole('navigation')).toBeInTheDocument()
 })
+
+
+describe('Retrive geo posiotion', () => {
+    it('retrives coordinates', async () => {
+        const navigator = {
+            geolocation: true
+        }
+
+
+        const wrapper = shallow(<App />);
+        expect(wrapper.geoLocation()).toBe(true)
+
+    })
+})
+
 
