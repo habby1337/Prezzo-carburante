@@ -106,7 +106,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <Row>
                                     <Col>
-                                        <Form.Select size="sm" disabled={isDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
+                                        <Form.Select data-testid='select_carburante' size="sm" disabled={isDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
                                             {...register('carburante')}>
                                             <option defaultValue value="0">Tipo di Carburante</option>
                                             <option value="1-x">Benzina (Tutti)</option>
@@ -116,7 +116,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option value="2-x">Gasolio (Tutti)</option>
                                             <option value="2-1">Gasolio (Self)</option>
                                             <option value="2-0">Gasolio (Servito)</option>
-                                            <option disabled value="0"></option>
+                                            {/* <option disabled value="0"></option>
                                             <option value="3-x">Metano (Tutti)</option>
                                             <option value="3-1">Metano (Self)</option>
                                             <option value="3-0">Metano (Servito)</option>
@@ -131,13 +131,13 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option disabled value="0"></option>
                                             <option value="324-x">GNL (Tutti)</option>
                                             <option value="324-1">GNL (Self)</option>
-                                            <option value="324-0">GNL (Servito)</option>
+                                            <option value="324-0">GNL (Servito)</option> */}
 
                                         </Form.Select>
                                         <small className="invalid-feedback">{errors.carburante?.message}</small>
                                     </Col>
                                     <Col>
-                                        <Form.Select size="sm" disabled={isDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
+                                        <Form.Select data-testid='select_ordineprezzo' size="sm" disabled={isDisabled} name="ordineprezzo" className={`form-control ${errors.ordineprezzo ? 'is-invalid' : ''}`}
                                             {...register('ordineprezzo')}>
                                             <option defaultValue="0">Ordine Prezzi</option>
                                             <option value="asc">📈 Crescente</option>
@@ -148,7 +148,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                 </Row>
                                 <Row className="mt-3">
                                     <Col>
-                                        <Form.Select size="sm" disabled={isDisabled} name="distanzaricerca" className={`form-control ${errors.distanzaricerca ? 'is-invalid' : ''}`}
+                                        <Form.Select data-testid='select_distanzaricerca' size="sm" disabled={isDisabled} name="distanzaricerca" className={`form-control ${errors.distanzaricerca ? 'is-invalid' : ''}`}
                                             {...register('distanzaricerca')}>
                                             <option defaultValue value="0">Distanza di Ricerca</option>
                                             <option value="1000"> 1Km (🆘)
@@ -169,7 +169,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                     </Col>
                                 </Row>
                                 <div className="mx-auto btn-lg text-center pt-3">
-                                    <Button type="submit" variant="outline-primary" disabled={isDisabled} >Ricerca 🔎</Button>
+                                    <Button data-testid="button_search" type="submit" variant="outline-primary" disabled={isDisabled} >Ricerca 🔎</Button>
                                 </div>
                             </form>
                         </Container>

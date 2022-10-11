@@ -9,6 +9,7 @@ import Table from 'react-bootstrap/Table';
 
 
 import RowLine from './RowLine';
+import Statistics from './Statistics';
 
 
 
@@ -141,7 +142,9 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                                 <tbody>
                                     {listItems}
                                 </tbody>
-
+                                <caption>
+                                    {/* <Statistics /> */}
+                                </caption>
                             </Table>
                         </Container>
                     </Card.Body>
