@@ -67,7 +67,7 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                 case '1':
                     is_fuelpump_selfservice = true;
                     break;
-                case '2':
+                case '0':
                     is_fuelpump_selfservice = false;
                     break;
                 case 'x':
@@ -79,6 +79,8 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
             }
 
 
+
+
             const validResults = resultPetrolData
                 .results
                 .filter(result => result
@@ -86,10 +88,10 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                     .some(fuel => fuel.name === fuel_type_selected));
 
 
-            const validNResults = validResults.slice(0, maxResult);
+            // const validNResults = validResults.slice(0, maxResult);
 
 
-            const finalList = validNResults
+            const finalList = validResults
                 .map((row, index) => {
 
                     const fuelToUse = row
@@ -99,23 +101,29 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                         );
                     const fuel_price = fuelToUse.price.toString();
 
-
                     if (fuelToUse.isSelf === is_fuelpump_selfservice) {
                         return (<RowLine key={index} index={index} row={row} isSelf={true} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
                     } else if (is_fuelpump_selfservice === undefined) {
                         return (<RowLine key={index} index={index} row={row} isSelf={false} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
                     }
-                    else {
-                        return (<tr><td colSpan="3">Nessun risultato</td></tr>)
-                    }
+
+
+                    // else {
+                    //     return (<RowLine key={index} index={index} row={row} isSelf={false} fuelToUse={fuelToUse} fuel_price={fuel_price} />)
+                    // }
                 })
+                .filter(function (e) { return e })
 
 
 
-            setListItems(finalList)
+            if (finalList.length > 0) {
+                <tr><td colSpan="3">Nessun risultato</td></tr>
+            }
+
+            setListItems(finalList.slice(0, maxResult))
 
         }
-        else if (resultPetrolData == "proxyOff" || resultPetrolData.length === 0) {
+        else if (resultPetrolData === "proxyOff" || resultPetrolData.length === 0) {
             setListItems([<tr key="1"><td colSpan="3" className="text-dark text-warning text-center">In questo momento il server backend non sta rispondendo 🥹</td></tr>])
         }
         else {

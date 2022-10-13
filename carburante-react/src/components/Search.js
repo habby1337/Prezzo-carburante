@@ -120,7 +120,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                             <option value="1-1">Benzina (Self)</option>
                                             <option value="1-0">Benzina (Servito)</option>
                                             <option disabled value="0"></option>
-                                            <option value="2-x">Gasolio (Tutti)</option>
+                                            {/* <option value="2-x">Gasolio (Tutti)</option> */}
                                             <option value="2-1">Gasolio (Self)</option>
                                             <option value="2-0">Gasolio (Servito)</option>
                                             {/* <option disabled value="0"></option>

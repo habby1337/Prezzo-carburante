@@ -30,9 +30,9 @@ function App() {
         setGpsStatus('Le API di permessi non sono supportate da questo browser, non puoi usare l\'applicazione. 😭');
       }
       else {
-
         new Promise((resolve, reject) => {
           navigator.permissions.query({ name: 'geolocation' })
+            // console.log('navigator.permissions.query({ name: \'geolocation\' })', navigator.permissions.query({ name: 'geolocation' }))
             .then(function (permissionStatus) {
 
               if (permissionStatus.state === 'granted') {
@@ -51,10 +51,25 @@ function App() {
 
                 resolve();
               }
+              else if (permissionStatus.state === 'prompt') {
+                setGpsStatus('❗Per recuperare la posizione devi consentire la geolocalizzazione');
+                // setGpsStatus('❓ Recuperando la tua posizione 🛰️...');
+
+                navigator.geolocation.getCurrentPosition((position) => {
+                  setIsInputDisabled(false)
+                  setGpsStatus('📍Posizione recuperata!');
+                  setLat(position.coords.latitude);
+                  setLng(position.coords.longitude);
+                  resolve();
+                })
+              }
               else {
                 setGpsStatus('Per usare l\'applicazione devi abilitare la geolocalizzazione');
+
                 reject();
               }
+            }, (err) => {
+              getLocation()
             });
         })
 
