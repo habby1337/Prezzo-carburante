@@ -73,16 +73,20 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
         }
-        axios.post('http://localhost:8000/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, { headers: headers })
+        axios.post('https://cors-proxxye.herokuapp.com/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, { headers: headers })
             .then(function (response) {
-
-                setResultData(response.data)
-                return resolve();
+                // console.log(response);
+                if (response.status === 200) {
+                    setResultData(response.data);
+                    resolve();
+                }
+                // setResultData(response.data)
+                // resolve();
             })
             .catch(function (error) {
-                // console.log(error);
+                console.log(error);
                 setResultData("proxyOff")
-                return resolve(error);
+                reject(error);
             });
 
     }

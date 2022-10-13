@@ -1,8 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { act } from 'react-dom/test-utils';
+import sinon from 'sinon';
+import TestUtils from 'react-dom/test-utils';
+
 import Search from './Search';
+
 
 
 test('loads and displays search', async () => {
@@ -116,3 +119,64 @@ test('expect to be an errore message if select distanza di ricerca has not been 
 })
 
 //Check search functionality
+
+describe('Result list after button press', () => {
+
+
+    test('expect to be a list of result after filter selection and button submit', async () => {
+        let isInputDisabled = false;
+        let lat = 41.8071389;
+        let lng = 12.486166;
+
+        var server = sinon.fakeServer.create();
+
+       
+        var component = <Search isDisabled={isInputDisabled} lat={lat} lng={lng} />;
+        render(component)
+        
+
+        
+        // render(<Search isDisabled={isInputDisabled} lat={lat} lng={lng} />)
+        await act(() => {
+            server.respondWith(200, {"Content-Type": "text/html"},`{ "id": 1, "name": "Yakitri", "fuels": [{ "id": 1, "price": 43, "name": "GPL", "fuelId": 1, "isSelf": true }, { "id": 2, "price": 30, "name": "Gasolio", "fuelId": 2, "isSelf": true }], "location": [{ "lat": -3.012309, "lng": 33.0873408 }], "insertDate": "2022-03-14", "address": "74093 Springs Circle", "brand": "Paroxetine" }`); //we are supplying 'foo' for the fake response
+            
+            userEvent.selectOptions(screen.getByTestId('select_carburante'), '1-x')
+
+            userEvent.selectOptions(screen.getByTestId('select_ordineprezzo'), 'asc')
+
+            userEvent.selectOptions(screen.getByTestId('select_distanzaricerca'), '50000')
+
+
+            
+            userEvent.click(screen.getByTestId('button_search'));
+
+            
+            
+        })
+            
+
+
+        
+
+        
+
+
+
+        expect(screen.getByTestId('result_list')).toBeInTheDocument()
+
+        server.restore();
+
+        // $.ajax.calls[0][0].success(
+        //     [{ "id": 1, "name": "Yakitri", "fuels": [{ "id": 1, "price": 43, "name": "GPL", "fuelId": 1, "isSelf": true }, { "id": 2, "price": 30, "name": "Gasolio", "fuelId": 2, "isSelf": true }], "location": [{ "lat": -3.012309, "lng": 33.0873408 }], "insertDate": "2022-03-14", "address": "74093 Springs Circle", "brand": "Paroxetine" }]
+        // )
+
+
+
+        // make request to get data
+        //row   
+
+    })
+
+
+
+})

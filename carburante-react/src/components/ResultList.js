@@ -29,7 +29,11 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
 
     useEffect(() => {
 
-        if (resultPetrolData !== 0 && resultPetrolData.length > 0 && resultPetrolData !== "proxyOff") {
+        // console.log('resultPetrolData', resultPetrolData);
+        // console.log("resultPetrolData hasOwnProperty results", resultPetrolData.lenght > 0);
+        // console.log("resultPetrolData diverso da  proxyOff", resultPetrolData !== "proxyOff");
+
+        if (resultPetrolData.hasOwnProperty('results') && resultPetrolData !== "proxyOff") {
             let fuel_combo_selection = fuelType.split('-')
             let is_fuelpump_selfservice, fuel_type_selected;
 
@@ -105,6 +109,8 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
                         return (<tr><td colSpan="3">Nessun risultato</td></tr>)
                     }
                 })
+
+
 
             setListItems(finalList)
 

@@ -25,19 +25,41 @@ function App() {
     if (!navigator.geolocation) {
       setGpsStatus('La geolocalizzazione non è supportata da questo browser, non puoi usare l\'applicazione. 😭');
     } else {
-      setGpsStatus('❓ Recuperando la tua posizione 🛰️...');
-      navigator.geolocation.getCurrentPosition((position) => {
-        setIsInputDisabled(false)
-        setGpsStatus('📍Posizione recuperata!');
-        setLat(position.coords.latitude);
-        setLng(position.coords.longitude);
-        return true;
-      }, () => {
-        setGpsStatus('Impossibile recuperare la tua posizione');
-      }, { maximumAge: 5000, timeout: 80000, enableHighAccuracy: true });
+
+      if (!navigator.permissions) {
+        setGpsStatus('Le API di permessi non sono supportate da questo browser, non puoi usare l\'applicazione. 😭');
+      }
+      else {
+
+        new Promise((resolve, reject) => {
+          navigator.permissions.query({ name: 'geolocation' })
+            .then(function (permissionStatus) {
+
+              if (permissionStatus.state === 'granted') {
+
+                setGpsStatus('❓ Recuperando la tua posizione 🛰️...');
+
+                navigator.geolocation.getCurrentPosition((position) => {
+                  setIsInputDisabled(false)
+                  setGpsStatus('📍Posizione recuperata!');
+                  setLat(position.coords.latitude);
+                  setLng(position.coords.longitude);
+
+                }, () => {
+                  setGpsStatus('Impossibile recuperare la tua posizione');
+                }, { maximumAge: 5000, timeout: 80000, enableHighAccuracy: true });
+
+                resolve();
+              }
+              else {
+                setGpsStatus('Per usare l\'applicazione devi abilitare la geolocalizzazione');
+                reject();
+              }
+            });
+        })
+
+      }
     }
-
-
   }
 
   // Called upon component mount
