@@ -73,7 +73,13 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 
         }
-        axios.post('https://cors-proxxye.herokuapp.com/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, { headers: headers })
+
+
+        axios.post('https://cors-proxxye.herokuapp.com/https://carburanti.mise.gov.it/ospzApi/search/zone', body_json, {
+            headers: headers,
+            timeout: 15000,
+            onUploadProgress: () => { setResultData("loading") }
+        })
             .then(function (response) {
                 // console.log(response);
                 if (response.status === 200) {
@@ -84,9 +90,15 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                 // resolve();
             })
             .catch(function (error) {
-                console.log(error);
-                setResultData("proxyOff")
-                reject(error);
+
+                if (error.code === 'ECONNABORTED') {
+                    setResultData("proxyOff")
+                    reject(error);
+                }
+
+                // console.log(error);
+                // setResultData("proxyOff")
+
             });
 
     }

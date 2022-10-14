@@ -5,7 +5,7 @@ function RowLine({ index, row, isSelf, fuelToUse, fuel_price }) {
         return this.length > length ? (this.substring(0, length) + '...') : this;
     }
 
-    let name = (row.name).limit(7);
+    let name = (row.name).limit(10);
 
     if (!isSelf) {
         //ture

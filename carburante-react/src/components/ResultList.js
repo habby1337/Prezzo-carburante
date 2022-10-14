@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
+import Placeholder from 'react-bootstrap/Placeholder';
 
 
 import RowLine from './RowLine';
@@ -123,12 +124,23 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
             setListItems(finalList.slice(0, maxResult))
 
         }
+        else if (resultPetrolData === "loading") {
+            setListItems(
+                [<tr key="1"><td colSpan="3" className="text-dark text-warning text-center"><Placeholder animation='glow'></Placeholder></td></tr>],
+                [<tr key="2"><td colSpan="3" className="text-dark text-warning text-center">Ricerca in corso... 👀</td></tr>],
+                [<tr key="3"><td colSpan="3" className="text-dark text-warning text-center"><Placeholder animation='glow'></Placeholder></td></tr>]
+            )
+            // https://www.geeksforgeeks.org/react-suite-placeholder-grid-props/
+        }
         else if (resultPetrolData === "proxyOff" || resultPetrolData.length === 0) {
             setListItems([<tr key="1"><td colSpan="3" className="text-dark text-warning text-center">In questo momento il server backend non sta rispondendo 🥹</td></tr>])
         }
         else {
             setListItems([<tr key="1"><td colSpan="3" className="text-dark text-center">Perfavore, seleziona i criteri
-                di ricerca 🫠</td></tr>])
+                di ricerca 🫠</td ></tr >])
+            // setListItems([<div colSpan="3" ><Placeholder animation='glow'><Placeholder xs={12} /></Placeholder></div>],
+            //     [<div colSpan="3" ><Placeholder animation='glow'><Placeholder md={12} /></Placeholder></div>],
+            //     [<div colSpan="3" ><Placeholder animation='glow'><Placeholder md={12} /></Placeholder></div>])
         }
     }, [resultPetrolData, maxResult, fuelType])
 
