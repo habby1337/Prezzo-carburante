@@ -98,8 +98,8 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
 
     return (
         <>
-            <Container className="mt-3">
-                <Card>
+            <Container className="mt-3 mb-4 shadow-sm p-3 rounded componente" >
+                <Card className='border-0 '>
                     <Card.Body>
                         <Card.Title>
                             Ricerca
@@ -116,7 +116,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                         <Form.Select data-testid='select_carburante' size="sm" disabled={isDisabled} name="carburante" className={`form-control ${errors.carburante ? 'is-invalid' : ''}`}
                                             {...register('carburante')}>
                                             <option defaultValue value="0">Tipo di Carburante</option>
-                                            <option value="1-x">Benzina (Tutti)</option>
+                                            {/* <option value="1-x">Benzina (Tutti)</option> */}
                                             <option value="1-1">Benzina (Self)</option>
                                             <option value="1-0">Benzina (Servito)</option>
                                             <option disabled value="0"></option>
@@ -176,7 +176,7 @@ function Search({ gpsStatus, isDisabled, lat, lng }) {
                                     </Col>
                                 </Row>
                                 <div className="mx-auto btn-lg text-center pt-3">
-                                    <Button data-testid="button_search" type="submit" variant="outline-primary" disabled={isDisabled} >Ricerca 🔎</Button>
+                                    <Button data-testid="button_search" type="submit" variant="outline-dark" disabled={isDisabled} >Ricerca 🔎</Button>
                                 </div>
                             </form>
                         </Container>

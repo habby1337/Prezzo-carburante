@@ -134,8 +134,8 @@ function ResultList({ isDisabled, resultPetrolData, fuelType }) {
 
     return (
         <>
-            <Container className="mt-3">
-                <Card>
+            <Container className="componente shadow-sm p-3 mb-5 rounded ">
+                <Card className='border-0 '>
                     <Card.Body>
                         <Card.Title>
                             <Row>

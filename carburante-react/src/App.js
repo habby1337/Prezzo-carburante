@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
-// import './App.css';
+
 
 // Components
 import Search from './components/Search';
@@ -94,7 +94,7 @@ function App() {
 
             </Nav>
             <Nav>
-              <Nav.Link href="https://www.tensi.dev">Tensi.dev</Nav.Link>
+              <Nav.Link href="https://www.tensi.dev">tensi.dev</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
